@@ -3,6 +3,16 @@
 package fitz
 
 /*
+#cgo CFLAGS: -I${SRCDIR}/include
+#cgo LDFLAGS: -L${SRCDIR}/libs -lmupdf_linux_arm64 -lmupdfthird_linux_arm64 -lm
+#include "mupdf/fitz.h"
+#include "mupdf/fitz/document.h"
+
+static inline int go_fz_lookup_metadata(fz_context *ctx, fz_document *doc,
+                                        const char *key, char *buf, int size) {
+    return fz_lookup_metadata(ctx, doc, key, buf, size);
+}
+
 #include <mupdf/fitz.h>
 #include <stdlib.h>
 
@@ -543,8 +553,12 @@ func (f *Document) Metadata() map[string]string {
 		defer C.free(unsafe.Pointer(ckey))
 
 		buf := make([]byte, 256)
-		C.fz_lookup_metadata(f.ctx, f.doc, ckey, (*C.char)(unsafe.Pointer(&buf[0])), C.int(len(buf)))
 
+		rc := C.go_fz_lookup_metadata(f.ctx, f.doc, ckey,
+    		(*C.char)(unsafe.Pointer(&buf[0])),
+    		C.int(len(buf)),
+	)
+		_ = rc
 		return string(buf)
 	}
 
