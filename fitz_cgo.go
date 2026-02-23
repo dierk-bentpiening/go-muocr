@@ -4,7 +4,6 @@ package fitz
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/include
-#cgo LDFLAGS: -L${SRCDIR}/libs -lmupdf_linux_arm64 -lmupdfthird_linux_arm64 -lm
 #include "mupdf/fitz.h"
 #include "mupdf/fitz/document.h"
 
